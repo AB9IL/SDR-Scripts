@@ -1,6 +1,6 @@
 #! /bin/sh
 
-# sdr-updater (SDR Updater), version 0.2
+# sdr-updater (SDR Updater), version 0.3
 # Copyright (c) 2016 by Philip Collier, radio AB9IL <webmaster@ab9il.net>
 # SDR Updater is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -26,7 +26,8 @@ rm -rf ghpsdr3-alex
 }
 
 getopenwebrx(){
-echo "\n\nGetting the csdr dsp library..."
+#install OpenwebRX and dependencies
+echo "\nGetting the csdr dsp library..."
 # get the csdr dsp library
 cd ~
 git clone https://github.com/simonyiszk/csdr
@@ -55,7 +56,7 @@ getairspy(){
 echo "\n\nGetting support for airspy..."
 #install airspy support
 cd ~
-git clone git://github.com/airspy/host/
+git clone https://github.com/airspy/host/
 mkdir host/build
 cd host/build
 cmake ../ -DINSTALL_UDEV_RULES=ON
@@ -76,21 +77,29 @@ cd hackrf/host/build
 cmake ../ -DINSTALL_UDEV_RULES=ON
 make
 make install
+
+#get the SoapyHackRF support module
+cd ~
+git clone https://github.com/pothosware/SoapyHackRF
+mkdir SoapyHackRF/build
+cd SoapyHackRF/build
+cmake ..
+make
+make install
 ldconfig
 cd ~
 rm -rf hackrf
+rm -rf SoapyHackRF
 }
 
 getsdrplay(){
-#get the sdrplay linux api installer manually
-#from http://sdrplay.com/linuxdl.php
-#then enable and run it:
 echo "\n\n...SDRplay MiricsAPI..."
 echo "\nGet it manually from http://sdrplay.com/linuxdl.php"
+echo "this script will enable and run it!"
 cd ~
-chmod 755 SDRplay_RSP_MiricsAPI-Linux-1.95.3.run
-./SDRplay_RSP_MiricsAPI-Linux-1.95.3.run
-rm -f SDRplay_RSP_MiricsAPI-Linux-1.95.3.run
+chmod 755 SDRplay_RSP_MiricsAPI-Linux-1.97.1.run
+./SDRplay_RSP_MiricsAPI-Linux-1.97.1.run
+rm -f SDRplay_RSP_MiricsAPI-Linux-1.97.1.run
 
 #get the SoapySDRPlay support module for CubicSDR
 echo "\n...SoapySDRPlay..."
@@ -319,3 +328,4 @@ FALSE "Update RTL-SDR Drivers");
 	fi
 
 echo "\n\nScript Execution Completed!"
+exit
