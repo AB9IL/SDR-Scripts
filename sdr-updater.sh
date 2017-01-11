@@ -97,9 +97,9 @@ echo "\n\n...SDRplay MiricsAPI..."
 echo "\nGet it manually from http://sdrplay.com/linuxdl.php"
 echo "this script will enable and run it!"
 cd ~
-chmod 755 SDRplay_RSP_MiricsAPI-Linux-1.97.1.run
-./SDRplay_RSP_MiricsAPI-Linux-1.97.1.run
-rm -f SDRplay_RSP_MiricsAPI-Linux-1.97.1.run
+chmod 755 SDRplay_RSP_MiricsAPI-Linux-2.09.1.run
+./SDRplay_RSP_MiricsAPI-Linux-2.09.1.run
+rm -f SDRplay_RSP_MiricsAPI-Linux-2.09.1.run
 
 #get the SoapySDRPlay support module for CubicSDR
 echo "\n...SoapySDRPlay..."
@@ -115,18 +115,34 @@ cd ~
 rm -rf SoapySDRPlay
 
 #get sdrplay support from osmocom
-echo "\nNext, gr-osmosdr (gnuradio dependencies for sdrplay forked by hb9fxq)"
+echo "\n...gr-osmosdr..."
 cd ~
-#use the hb9fxq fork with better sdrplay support
-git clone https://github.com/krippendorf/gr-osmosdr-fork-sdrplay
+#you can use the original osmocom drivers...
+#git clone git://git.osmocom.org/gr-osmosdr
+#mkdir gr-osmosdr/build
+#cd gr-osmosdr/build
+#cmake -DENABLE_NONFREE=TRUE ../
+#make
+#make install
+#ldconfig
+
+#else use the hb9fxq fork with better sdrplay support
+#git clone https://github.com/krippendorf/gr-osmosdr-fork-sdrplay
+#mkdir gr-osmosdr-fork-sdrplay/build
+#cd gr-osmosdr-fork-sdrplay/build
+#cmake -DENABLE_NONFREE=TRUE ../
+#make
+#make install
+#ldconfig
+
+#else Freeman Pascal's fork with even fresher sdrplay support re api 1.97.1
+git clone https://github.com/Analias/gr-osmosdr-fork-sdrplay
 mkdir gr-osmosdr-fork-sdrplay/build
 cd gr-osmosdr-fork-sdrplay/build
 cmake -DENABLE_NONFREE=TRUE ../
 make
 make install
 ldconfig
-cd ~
-rm -rf gr-osmosdr-fork-sdrplay
 
 echo "\nGetting openwebrx dependencies for sdrplay (SDRPlayPorts)"
 #SDRplay support in OpenWebRX
