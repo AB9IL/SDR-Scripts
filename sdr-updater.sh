@@ -1,7 +1,7 @@
 #! /bin/sh
 
-# sdr-updater (SDR Updater), version 0.3
-# Copyright (c) 2016 by Philip Collier, radio AB9IL <webmaster@ab9il.net>
+# sdr-updater for Skywave Linux, version 0.4
+# Copyright (c) 2017 by Philip Collier, radio AB9IL <webmaster@ab9il.net>
 # SDR Updater is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 3 of the License, or
@@ -26,8 +26,7 @@ rm -rf ghpsdr3-alex
 }
 
 getopenwebrx(){
-#install OpenwebRX and dependencies
-echo "\nGetting the csdr dsp library..."
+echo "\n\nGetting the csdr dsp library..."
 # get the csdr dsp library
 cd ~
 git clone https://github.com/simonyiszk/csdr
@@ -56,7 +55,7 @@ getairspy(){
 echo "\n\nGetting support for airspy..."
 #install airspy support
 cd ~
-git clone https://github.com/airspy/host/
+git clone git://github.com/airspy/host/
 mkdir host/build
 cd host/build
 cmake ../ -DINSTALL_UDEV_RULES=ON
@@ -77,6 +76,7 @@ cd hackrf/host/build
 cmake ../ -DINSTALL_UDEV_RULES=ON
 make
 make install
+ldconfig
 
 #get the SoapyHackRF support module
 cd ~
@@ -93,9 +93,11 @@ rm -rf SoapyHackRF
 }
 
 getsdrplay(){
+#get the sdrplay linux api installer manually
+#from http://sdrplay.com/linuxdl.php
+#then enable and run it:
 echo "\n\n...SDRplay MiricsAPI..."
 echo "\nGet it manually from http://sdrplay.com/linuxdl.php"
-echo "this script will enable and run it!"
 cd ~
 chmod 755 SDRplay_RSP_MiricsAPI-Linux-2.09.1.run
 ./SDRplay_RSP_MiricsAPI-Linux-2.09.1.run
@@ -115,34 +117,18 @@ cd ~
 rm -rf SoapySDRPlay
 
 #get sdrplay support from osmocom
-echo "\n...gr-osmosdr..."
+echo "\nNext, gr-osmosdr (gnuradio dependencies for sdrplay forked by hb9fxq)"
 cd ~
-#you can use the original osmocom drivers...
-#git clone git://git.osmocom.org/gr-osmosdr
-#mkdir gr-osmosdr/build
-#cd gr-osmosdr/build
-#cmake -DENABLE_NONFREE=TRUE ../
-#make
-#make install
-#ldconfig
-
-#else use the hb9fxq fork with better sdrplay support
-#git clone https://github.com/krippendorf/gr-osmosdr-fork-sdrplay
-#mkdir gr-osmosdr-fork-sdrplay/build
-#cd gr-osmosdr-fork-sdrplay/build
-#cmake -DENABLE_NONFREE=TRUE ../
-#make
-#make install
-#ldconfig
-
-#else Freeman Pascal's fork with even fresher sdrplay support re api 1.97.1
-git clone https://github.com/Analias/gr-osmosdr-fork-sdrplay
+#use the hb9fxq fork with better sdrplay support
+git clone https://github.com/krippendorf/gr-osmosdr-fork-sdrplay
 mkdir gr-osmosdr-fork-sdrplay/build
 cd gr-osmosdr-fork-sdrplay/build
 cmake -DENABLE_NONFREE=TRUE ../
 make
 make install
 ldconfig
+cd ~
+rm -rf gr-osmosdr-fork-sdrplay
 
 echo "\nGetting openwebrx dependencies for sdrplay (SDRPlayPorts)"
 #SDRplay support in OpenWebRX
@@ -170,6 +156,17 @@ make
 make install
 ldconfig
 
+#get the SoapyRTLSDR support module
+echo "\n...SoapyRTLSDR..."
+cd ~
+git clone https://github.com/pothosware/SoapyRTLSDR
+mkdir SoapyRTLSDR/build
+cd SoapyRTLSDR/build
+cmake .. -DCMAKE_BUILD_TYPE=Release
+make
+make install
+ldconfig
+
 #install rtl_hpsdr
 #build librtlsdr, but only keep rtl_hpsdr
 echo "\n...rtl_hpsdr..."
@@ -183,6 +180,7 @@ cp ~/librtlsdr/build/src/rtl_hpsdr /usr/local/bin/rtl_hpsdr
 cd ~
 rm -rf rtl-sdr
 rm -rf librtlsdr
+rm -rf SoapyRTLSDR
 }
 
 getcubicsdr(){
@@ -210,19 +208,8 @@ make
 make install
 ldconfig
 
-#get basic rtlsdr firmware
+#get basic rtlsdr firmware and soapy module
 getrtlsdr
-
-#get the SoapyRTLSDR support module
-echo "\n...SoapyRTLSDR..."
-cd ~
-git clone https://github.com/pothosware/SoapyRTLSDR
-mkdir SoapyRTLSDR/build
-cd SoapyRTLSDR/build
-cmake .. -DCMAKE_BUILD_TYPE=Release
-make
-make install
-ldconfig
 
 #get CubicSDR
 echo "\n\nLast, but not least, CubicSDR..."
@@ -239,7 +226,6 @@ cp -ar ~/CubicSDR/build/x64/* /opt/CubicSDR
 cd ~
 rm -rf liquid-dsp
 rm -rf SoapySDR
-rm -rf SoapyRTLSDR
 rm -rf CubicSDR
 }
 
@@ -252,6 +238,7 @@ qmake cudaSDR.pro
 make
 cp ~/cudaSDR/Source/bin/cudaSDR /usr/local/bin/cudaSDR
 cp ~/cudaSDR/Source/bin/settings.ini /usr/local/bin/settings.ini
+cd ~
 rm -rf cudaSDR
 }
 
@@ -306,10 +293,33 @@ make install
 ldconfig
 }
 
+getcrypto(){
+#lantern
+echo "\n getting Lantern..."
+wget "https://s3.amazonaws.com/lantern/lantern-installer-beta-64-bit.deb"
+dpkg -i lantern-installer-beta-64-bit.deb
+
+#replace the .desktop file
+echo "\n creating the desktop file..."
+echo '[Desktop Entry]
+Type=Application
+Name=Lantern
+Exec=sh -c "lantern -addr 127.0.0.1:8080"
+Icon=lantern
+Comment=Censorship circumvention application for unblocked web browsing.
+Categories=Network;Internet;Networking;Privacy;Proxy;' > /usr/share/applications/lantern.desktop
+
+echo "\n cleaning up a bit..."
+
+#update cjdns
+echo "\n updating cjdns..."
+sh -c "/etc/init.d/cjdns update"
+}
+
 ans=$(zenity  --list --height 270 --width 420 --text "SDR Software Updater" --radiolist  --column "Pick" --column "Action" \
 TRUE "Exit (Do Nothing)" FALSE "Update QtRadio" FALSE "Update CubicSDR" FALSE "Update CudaSDR"  FALSE "Update OpenwebRX" \
 FALSE "Update SDRangel" FALSE "Update Dump1090" FALSE "Update HackRF Drivers" FALSE "Update SDRPlay Drivers" \
-FALSE "Update RTL-SDR Drivers");
+FALSE "Update RTL-SDR Drivers" FALSE "Update Mesh Networking & Crypto");
 
 	if [  "$ans" = "Exit (Do Nothing)" ]; then
 		exit
@@ -341,7 +351,9 @@ FALSE "Update RTL-SDR Drivers");
 	elif [  "$ans" = "Update RTL-SDR Drivers" ]; then
 		getrtlsdr
 
+	elif [  "$ans" = "Update Mesh Networking & Crypto" ]; then
+		getcrypto
+
 	fi
 
 echo "\n\nScript Execution Completed!"
-exit
