@@ -11,7 +11,7 @@ Encoding=UTF-8
 
 getqtradio(){
 #get qtradio
-echo "\n\nGetting QtRadio..."
+echo "\n\n...QtRadio..."
 cd ~
 git clone https://github.com/alexlee188/ghpsdr3-alex
 cd ghpsdr3-alex
@@ -26,7 +26,7 @@ rm -rf ghpsdr3-alex
 }
 
 getopenwebrx(){
-echo "\n\nGetting the csdr dsp library..."
+echo "\n\n...csdr dsp library..."
 # get the csdr dsp library
 cd ~
 git clone https://github.com/simonyiszk/csdr
@@ -36,13 +36,13 @@ make install
 ldconfig
 cd ~
 rm -rf csdr
-echo "\n\n\nGetting Openwebrx..."
+echo "\n\n\n...Openwebrx..."
 # get openwebrx
 cd ~
 git clone https://github.com/simonyiszk/openwebrx
 # nothing to make
 # move the files
-mv -ar ~/openwebrx /usr/local/sbin/openwebrx
+cp -ar ~/openwebrx /usr/local/sbin/openwebrx
 
 # get the device support
 getairspy
@@ -52,7 +52,7 @@ getsdrplay
 }
 
 getairspy(){
-echo "\n\nGetting support for airspy..."
+echo "\n\n...airspy host..."
 #install airspy support
 cd ~
 git clone git://github.com/airspy/host/
@@ -79,6 +79,7 @@ make install
 ldconfig
 
 #get the SoapyHackRF support module
+echo "\n\n...soapy hackrf"
 cd ~
 git clone https://github.com/pothosware/SoapyHackRF
 mkdir SoapyHackRF/build
@@ -97,11 +98,12 @@ getsdrplay(){
 #from http://sdrplay.com/linuxdl.php
 #then enable and run it:
 echo "\n\n...SDRplay MiricsAPI..."
-echo "\nGet it manually from http://sdrplay.com/linuxdl.php"
+echo "\nGet it manually from http://sdrplay.com/"
+echo "\nRobots are people too."
 cd ~
-chmod 755 SDRplay_RSP_MiricsAPI-Linux-2.09.1.run
-./SDRplay_RSP_MiricsAPI-Linux-2.09.1.run
-rm -f SDRplay_RSP_MiricsAPI-Linux-2.09.1.run
+chmod 755 SDRplay_RSP_API-Linux-2.09.1.run
+./SDRplay_RSP_API-Linux-2.09.1.run
+rm -f SDRplay_RSP_API-Linux-2.09.1.run
 
 #get the SoapySDRPlay support module for CubicSDR
 echo "\n...SoapySDRPlay..."
@@ -117,7 +119,7 @@ cd ~
 rm -rf SoapySDRPlay
 
 #get sdrplay support from osmocom
-echo "\nNext, gr-osmosdr (gnuradio dependencies for sdrplay forked by hb9fxq)"
+echo "\n\n...gr-osmosdr (gnuradio dependencies for sdrplay forked by hb9fxq)"
 cd ~
 #use the hb9fxq fork with better sdrplay support
 git clone https://github.com/krippendorf/gr-osmosdr-fork-sdrplay
@@ -130,7 +132,7 @@ ldconfig
 cd ~
 rm -rf gr-osmosdr-fork-sdrplay
 
-echo "\nGetting openwebrx dependencies for sdrplay (SDRPlayPorts)"
+echo "\n\n...openwebrx dependencies for sdrplay (SDRPlayPorts)"
 #SDRplay support in OpenWebRX
 cd ~
 git clone https://github.com/krippendorf/SDRPlayPorts
@@ -157,7 +159,7 @@ make install
 ldconfig
 
 #get the SoapyRTLSDR support module
-echo "\n...SoapyRTLSDR..."
+echo "\n\n...SoapyRTLSDR..."
 cd ~
 git clone https://github.com/pothosware/SoapyRTLSDR
 mkdir SoapyRTLSDR/build
@@ -169,11 +171,11 @@ ldconfig
 
 #install rtl_hpsdr
 #build librtlsdr, but only keep rtl_hpsdr
-echo "\n...rtl_hpsdr..."
+echo "\n\n...rtl_hpsdr..."
 cd ~
 git clone https://github.com/n1gp/librtlsdr
 mkdir librtlsdr/build
-cd build
+cd librtlsdr/build
 cmake ..
 make
 cp ~/librtlsdr/build/src/rtl_hpsdr /usr/local/bin/rtl_hpsdr
@@ -185,7 +187,7 @@ rm -rf SoapyRTLSDR
 
 getcubicsdr(){
 #install CubicSDR and dependencies
-echo "\n\nGetting CubicSDR and dependencies"
+echo "\n\n...Getting CubicSDR and dependencies"
 #get liquid-dsp
 echo "\n...liquid-dsp..."
 cd ~
@@ -198,7 +200,7 @@ make install
 ldconfig
 
 #get SoapySDR
-echo "\n...SoapySDR..."
+echo "\n\n...SoapySDR..."
 cd ~
 git clone https://github.com/pothosware/SoapySDR
 mkdir SoapySDR/build
@@ -212,7 +214,7 @@ ldconfig
 getrtlsdr
 
 #get CubicSDR
-echo "\n\nLast, but not least, CubicSDR..."
+echo "\n\n...CubicSDR..."
 cd ~
 git clone https://github.com/cjcliffe/CubicSDR
 mkdir CubicSDR/build
@@ -262,7 +264,7 @@ cp ~/dump1090/README-json.md /usr/local/sbin/dump1090/README-json.md
 rm -rf dump1090
 
 #get dump1090 with advanced device support
-echo "\n...dump1090 for advanced devices..."
+echo "\n\n...dump1090 for advanced devices..."
 cd ~
 git clone https://github.com/itemir/dump1090_sdrplus
 cd dump1090_sdrplus
@@ -295,7 +297,7 @@ ldconfig
 
 getcrypto(){
 #lantern
-echo "\n getting Lantern..."
+echo "\n\n...getting Lantern..."
 wget "https://s3.amazonaws.com/lantern/lantern-installer-beta-64-bit.deb"
 dpkg -i lantern-installer-beta-64-bit.deb
 
@@ -309,10 +311,10 @@ Icon=lantern
 Comment=Censorship circumvention application for unblocked web browsing.
 Categories=Network;Internet;Networking;Privacy;Proxy;' > /usr/share/applications/lantern.desktop
 
-echo "\n cleaning up a bit..."
+echo "\n\n...cleaning up a bit..."
 
 #update cjdns
-echo "\n updating cjdns..."
+echo "\n\...updating cjdns..."
 sh -c "/etc/init.d/cjdns update"
 }
 
