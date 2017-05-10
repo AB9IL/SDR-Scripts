@@ -1,6 +1,6 @@
 #! /bin/sh
 
-# sdr-updater for Skywave Linux, version 0.4
+# sdr-updater for Skywave Linux, version 0.5
 # Copyright (c) 2017 by Philip Collier, radio AB9IL <webmaster@ab9il.net>
 # SDR Updater is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -62,7 +62,19 @@ cmake ../ -DINSTALL_UDEV_RULES=ON
 make
 make install
 ldconfig
+
+#get the SoapyAirspy support module
+echo "\n\n...soapy airspy"
 cd ~
+git clone https://github.com/pothosware/SoapyAirspy
+mkdir SoapyAirspy/build
+cd SoapyAirspy/build
+cmake ..
+make
+make install
+ldconfig
+cd ~
+rm -rf SoapyAirspy
 rm -rf host
 }
 
@@ -94,6 +106,18 @@ rm -rf SoapyHackRF
 }
 
 getsdrplay(){
+#open source sdrplay driver from f4exb
+cd ~
+git clone https://github.com/f4exb/libmirisdr-4
+mkdir libmirisdr-4/build
+cd libmirisdr-4/build
+cmake ../
+make
+make install
+ldconfig
+cd ~
+rm -rf libmirisdr-4
+
 #get the sdrplay linux api installer manually
 #from http://sdrplay.com/linuxdl.php
 #then enable and run it:
@@ -185,20 +209,7 @@ rm -rf librtlsdr
 rm -rf SoapyRTLSDR
 }
 
-getcubicsdr(){
-#install CubicSDR and dependencies
-echo "\n\n...Getting CubicSDR and dependencies"
-#get liquid-dsp
-echo "\n...liquid-dsp..."
-cd ~
-git clone https://github.com/jgaeddert/liquid-dsp
-cd liquid-dsp
-./bootstrap.sh
-./configure
-make
-make install
-ldconfig
-
+getsoapysdr(){
 #get SoapySDR
 echo "\n\n...SoapySDR..."
 cd ~
@@ -210,8 +221,69 @@ make
 make install
 ldconfig
 
-#get basic rtlsdr firmware and soapy module
+#get rtaudio
+echo "\n\n...rtaudio"
+cd ~
+git clone https://github.com/thestk/rtaudio
+#mkdir rtaudio/build
+#cd rtaudio/build
+#cmake .. -DAUDIO_LINUX_PULSE=ON
+cd rtaudio ./autogen.sh --with-pulse
+make
+make install
+ldconfig
+cd ~
+rm -rf rtaudio
+
+#get the SoapyAudio support module
+echo "\n\n...soapy audio"
+cd ~
+git clone https://github.com/pothosware/SoapyAudio
+mkdir SoapyAudio/build
+cd SoapyAudio/build
+cmake ..
+make
+make install
+ldconfig
+cd ~
+rm -rf SoapyAudio
+rm -rf SoapySDR
+
+#get the SoapyOsmo support module
+echo "\n\n...soapy osmo"
+cd ~
+git clone https://github.com/pothosware/SoapyOsmo
+mkdir SoapyOsmo/build
+cd SoapyOsmo/build
+cmake ..
+make
+make install
+ldconfig
+cd ~
+rm -rf SoapyAudio
+rm -rf SoapyOsmo
+}
+
+getcubicsdr(){
+#install CubicSDR and dependencies
+echo "\n\n...Getting CubicSDR and dependencies"
+echo "\n...liquid-dsp..."
+cd ~
+git clone https://github.com/jgaeddert/liquid-dsp
+cd liquid-dsp
+./bootstrap.sh
+./configure
+make
+make install
+ldconfig
+
+#get SoapySDR
+getsoapysdr
+
+#get basic radio firmware and soapy modules
 getrtlsdr
+getairspy
+gethackrf
 
 #get CubicSDR
 echo "\n\n...CubicSDR..."
@@ -227,7 +299,6 @@ make
 cp -ar ~/CubicSDR/build/x64/* /opt/CubicSDR
 cd ~
 rm -rf liquid-dsp
-rm -rf SoapySDR
 rm -rf CubicSDR
 }
 
@@ -251,17 +322,15 @@ cd ~
 git clone https://github.com/MalcolmRobb/dump1090
 cd dump1090
 make
-mkdir /usr/local/sbin/dump1090
-cp -ar ~/dump1090/public_html /usr/local/sbin/dump1090/public_html
-cp ~/dump1090/testfiles /usr/local/sbin/dump1090/testfiles
-cp ~/dump1090/tools /usr/local/sbin/dump1090/tools
-cp ~/dump1090/dump1090 /usr/local/sbin/dump1090/dump1090
-cp ~/dump1090/view1090 /usr/local/sbin/dump1090/view1090
-cp ~/dump1090/LICENSE /usr/local/sbin/dump1090/LICENSE
-cp ~/dump1090/README.md /usr/local/sbin/dump1090/README.md
-cp ~/dump1090/README-dump1090.md /usr/local/sbin/dump1090/README-dump1090.md
-cp ~/dump1090/README-json.md /usr/local/sbin/dump1090/README-json.md
+cp -ar public_html /usr/local/sbin/dump1090/public_html
+cp -ar testfiles /usr/local/sbin/dump1090/testfiles
+cp -ar tools /usr/local/sbin/dump1090/tools
+cp dump1090 /usr/local/sbin/dump1090/dump1090
+cp view1090 /usr/local/sbin/dump1090/view1090
+cp README.md /usr/local/sbin/dump1090/README.md
+cd ~
 rm -rf dump1090
+echo "\n\n...completed update for dump1090 for rtl-sdr devices..."
 
 #get dump1090 with advanced device support
 echo "\n\n...dump1090 for advanced devices..."
@@ -269,29 +338,26 @@ cd ~
 git clone https://github.com/itemir/dump1090_sdrplus
 cd dump1090_sdrplus
 make
-mkdir /usr/local/sbin/dump1090_sdrplus
-cp -ar ~/dump1090_sdrplus/public_html /usr/local/sbin/dump1090_sdrplus/public_html
-cp ~/dump1090_sdrplus/testfiles /usr/local/sbin/dump1090_sdrplus/testfiles
-cp ~/dump1090_sdrplus/tools /usr/local/sbin/dump1090_sdrplus/tools
-cp ~/dump1090_sdrplus/dump1090 /usr/local/sbin/dump1090_sdrplus/dump1090
-cp ~/dump1090_sdrplus/view1090 /usr/local/sbin/dump1090_sdrplus/view1090
-cp ~/dump1090_sdrplus/LICENSE /usr/local/sbin/dump1090_sdrplus/LICENSE
-cp ~/dump1090_sdrplus/README.md /usr/local/sbin/dump1090_sdrplus/README.md
-cp ~/dump1090_sdrplus/README-dump1090.md /usr/local/sbin/dump1090_sdrplus/README-dump1090.md
-cp ~/dump1090_sdrplus/README-json.md /usr/local/sbin/dump1090_sdrplus/README-json.md
+cp -ar images /usr/local/sbin/dump1090_sdrplus/images
+cp -ar testfiles /usr/local/sbin/dump1090_sdrplus/testfiles
+cp -ar tools /usr/local/sbin/dump1090_sdrplus/tools
+cp gmap.html /usr/local/sbin/dump1090_sdrplus/gmap.html
+cp dump1090 /usr/local/sbin/dump1090_sdrplus/dump1090
+cp README.md /usr/local/sbin/dump1090_sdrplus/README.md
+cd ~
 rm -rf dump1090_sdrplus
+echo "\n\n...completed update for dump1090 for advanced devices..."
 }
 
-getsdrangel(){
-#install sdrangel
+getr820tweak(){
+echo "\n\n...getting r820tweak..."
 cd ~
-#prerequisite packages: libboost-all-dev liblz4-dev libnanomsg.dev
-git clone https://github.com/f4exb/sdrangel
-mkdir sdrangel/build
-cd sdrangel/build
-cmake ../
+git clone https://github.com/gat3way/r820tweak
+cd r820tweak
 make
 make install
+cd ~
+rm -rf r820tweak
 ldconfig
 }
 
@@ -302,14 +368,13 @@ wget "https://s3.amazonaws.com/lantern/lantern-installer-beta-64-bit.deb"
 dpkg -i lantern-installer-beta-64-bit.deb
 
 #replace the .desktop file
-echo "\n creating the desktop file..."
 echo '[Desktop Entry]
 Type=Application
 Name=Lantern
-Exec=sh -c "lantern -addr 127.0.0.1:8080"
+Exec=sh -c "lantern -addr 127.0.0.1:8118"
 Icon=lantern
 Comment=Censorship circumvention application for unblocked web browsing.
-Categories=Network;Internet;Networking;Privacy;Proxy;' > /usr/share/applications/lantern.desktop
+Categories=Network;Internet;Networking;Privacy;Proxy;VPN;' > /usr/share/applications/lantern.desktop
 
 echo "\n\n...cleaning up a bit..."
 
@@ -320,7 +385,7 @@ sh -c "/etc/init.d/cjdns update"
 
 ans=$(zenity  --list --height 270 --width 420 --text "SDR Software Updater" --radiolist  --column "Pick" --column "Action" \
 TRUE "Exit (Do Nothing)" FALSE "Update QtRadio" FALSE "Update CubicSDR" FALSE "Update CudaSDR"  FALSE "Update OpenwebRX" \
-FALSE "Update SDRangel" FALSE "Update Dump1090" FALSE "Update HackRF Drivers" FALSE "Update SDRPlay Drivers" \
+FALSE "Update R820tweak" FALSE "Update Dump1090" FALSE "Update HackRF Drivers" FALSE "Update SDRPlay Drivers" \
 FALSE "Update RTL-SDR Drivers" FALSE "Update Mesh Networking & Crypto");
 
 	if [  "$ans" = "Exit (Do Nothing)" ]; then
@@ -341,8 +406,8 @@ FALSE "Update RTL-SDR Drivers" FALSE "Update Mesh Networking & Crypto");
 	elif [  "$ans" = "Update OpenwebRX" ]; then
 		getopenwebrx
 
-	elif [  "$ans" = "Update SDRangel" ]; then
-		getsdrangel
+	elif [  "$ans" = "Update R820tweak" ]; then
+		getr820tweak
 
 	elif [  "$ans" = "Update HackRF Drivers" ]; then
 		gethackrf
