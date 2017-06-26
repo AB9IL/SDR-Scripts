@@ -1,6 +1,6 @@
 #! /bin/sh
 
-# sdr-updater for Skywave Linux, version 0.5
+# sdr-updater for Skywave Linux, version 0.6
 # Copyright (c) 2017 by Philip Collier, radio AB9IL <webmaster@ab9il.net>
 # SDR Updater is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -174,7 +174,10 @@ getrtlsdr(){
 #install rtl-sdr drivers
 echo "\n\n...rtl-sdr firmware..."
 cd ~
-git clone https://git.osmocom.org/rtl-sdr
+#git clone https://git.osmocom.org/rtl-sdr
+#git clone https://github.com/thaolia/librtlsdr-thaolia
+#mv librtlsdr-thaolia rtl-sdr
+git clone https://github.com/mutability/rtl-sdr
 mkdir rtl-sdr/build
 cd rtl-sdr/build
 cmake ../ -DINSTALL_UDEV_RULES=ON
@@ -376,10 +379,19 @@ Icon=lantern
 Comment=Censorship circumvention application for unblocked web browsing.
 Categories=Network;Internet;Networking;Privacy;Proxy;VPN;' > /usr/share/applications/lantern.desktop
 
-echo "\n\n...cleaning up a bit..."
+echo "\n\n...Psiphon (PyClient)"
+cd ~
+#git clone https://github.com/gilcu3/psiphon
+git clone https://github.com/thispc/psiphon
+cd /psiphon/openssh-5.9p1
+./configure
+make
+mv ssh ../ssh
+cd ../../
+cp psiphon /usr/local/sbin/psiphon
 
 #update cjdns
-echo "\n\...updating cjdns..."
+echo "\n\n...updating cjdns..."
 sh -c "/etc/init.d/cjdns update"
 }
 
