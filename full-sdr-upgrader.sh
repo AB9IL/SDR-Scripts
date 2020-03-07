@@ -1,7 +1,7 @@
 #!/bin/bash
 
-# full-sdr-upgrader for Skywave Linux, version 0.9
-# Copyright (c) 2018 by Philip Collier, radio AB9IL <webmaster@ab9il.net>
+# full-sdr-upgrader for Skywave Linux, version 1.0
+# Copyright (c) 2019 by Philip Collier, radio AB9IL <webmaster@ab9il.net>
 # SDR Updater is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 3 of the License, or
