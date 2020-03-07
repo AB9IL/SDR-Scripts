@@ -1,4 +1,4 @@
-#! /bin/sh
+#!/bin/bash
 
 # full-sdr-upgrader for Skywave Linux, version 0.9
 # Copyright (c) 2018 by Philip Collier, radio AB9IL <webmaster@ab9il.net>
@@ -23,9 +23,9 @@ getsdrplay(){
 #echo "\nGet it manually from http://sdrplay.com/"
 #echo "\nRobots are people too."
 #cd ~
-#chmod 755 SDRplay_RSP_API-Linux-2.10.2.run
-#./SDRplay_RSP_API-Linux-2.10.2.run
-#rm -f SDRplay_RSP_API-Linux-2.10.2.run
+#chmod 755 SDRplay_RSP_API-Linux-2.13.1.run
+#./SDRplay_RSP_API-Linux-2.13.1.run
+#rm -f SDRplay_RSP_API-Linux-2.13.1.run
 
 #open source sdrplay driver from f4exb
 #cd ~
@@ -108,6 +108,18 @@ make install
 ldconfig
 cd ~
 rm -rf SoapySDRPlay
+
+#install rx_tools
+echo "\n\n...rx_tools..."
+cd ~
+git clone https://github.com/rxseger/rx_tools
+#git clone https://github.com/darkstar007/rx_tools
+mkdir rx_tools/build
+cd rx_tools/build
+cmake ..
+make
+make install
+ldconfig
 }
 
 getqtradio(){
@@ -148,13 +160,24 @@ make install
 ldconfig
 cd ~
 rm -rf csdr
+
 echo "\n\n...Openwebrx..."
 # get openwebrx
 cd ~
-git clone https://github.com/simonyiszk/openwebrx
+#git clone https://github.com/simonyiszk/openwebrx
+git clone https://github.com/jketterl/openwebrx
 # nothing to make
 # move the files
 cp -ar ~/openwebrx /usr/local/sbin/openwebrx
+
+# get openwebrx connectors 
+cd ~
+git clone https://github.com/jketterl/owrx_connector
+mkdir owrx_connector/build
+cd owrx_connector/build
+cmake ..
+make
+make install
 }
 
 getcubicsdr(){
@@ -163,6 +186,20 @@ cd ~
 wget "https://github.com/cjcliffe/CubicSDR/releases/download/0.2.3/CubicSDR-0.2.3-x86_64.AppImage"
 chmod +x CubicSDR-0.2.3-x86_64.AppImage
 mv ~/CubicSDR-0.2.3-x86_64.AppImage /usr/local/sbin/CubicSDR/CubicSDR.AppImage
+}
+
+getlinhpsdr(){
+# get linhpsdr
+echo "\n\n...linhpsdr..."
+cd ~
+git clone https://github.com/g0orx/linhpsdr
+cd linhpsdr
+sed -i "s/#SOAPYSDR_INCLUDE=SOAPYSDR/SOAPYSDR_INCLUDE=SOAPYSDR/g" Makefile
+make
+cd pkg
+dpkg -i linhpsdr.deb
+cd ~
+rm -rf linhpsdr
 }
 
 getremotesdrclient(){
@@ -184,48 +221,75 @@ Exec=/usr/local/bin/remotesdrclient-ns
 Icon=RemoteSdrClient.png
 Terminal=false
 Type=Application
-Categories=Network;HamRadio;' > /usr/share/applications/remotesdrclient.desktop
+Categories=Radio;HamRadio;' > /usr/share/applications/remotesdrclient.desktop
 }
 
 rtlsdrairband(){
 #get rtlsdr-airband
+cd ~
 git clone https://github.com/szpajder/RTLSDR-Airband
 cd RTLSDR-Airband
 PLATFORM=x86 NFM=1 make
 make install
 
+#get libacars
+cd ~
+git clone https://github.com/szpajder/libacars
+mkdir libacars/build
+cd libacars/build
+cmake ../
+make
+make install
+ldconfig
+
 #get acarsdec
 cd ~
-git clone https://github.com/AB9IL/acarsdec
-cd acarsdec
-autoreconf
-./configure
-make
-make acarsserv
+#git clone https://github.com/AB9IL/acarsdec
+git clone https://github.com/szpajder/acarsdec
+mkdir acarsdec/build
+cd acarsdec/build
+cmake ../ -Drtl=ON
+make make install
 
+#get acarsserv
 cd ~
+git clone https://github.com/TLeconte/acarsserv
+cd acarsserv
+make -f makefile
+cp acarsserv /usr/local/sbin/acarsserv
+
 #get dumpvdl2
+cd ~
 git clone https://github.com/szpajder/dumpvdl2
-cd dumpvdl2
+mkdir dumpvdl2/build
+cd dumpvdl2/build
+cmake ../
 make
-cp ~/dumpvdl2/dumpvdl2 /usr/local/bin/dumpvdl2
+make install
+ldconfig
 }
 
 getdump1090(){
 echo "\n\n...dump1090 for rtl-sdr devices..."
 cd ~
 #git clone https://github.com/mutability/dump1090
-git clone https://github.com/MalcolmRobb/dump1090
+#git clone https://github.com/MalcolmRobb/dump1090
+git clone https://github.com/Mictronics/dump1090
 cd dump1090
 make
-cp -ar public_html /usr/local/sbin/dump1090/public_html
-cp -ar testfiles /usr/local/sbin/dump1090/testfiles
-cp -ar tools /usr/local/sbin/dump1090/tools
-cp dump1090 /usr/local/sbin/dump1090/dump1090
-cp view1090 /usr/local/sbin/dump1090/view1090
-cp README.md /usr/local/sbin/dump1090/README.md
-cd ~
-rm -rf dump1090
+cp dump1090 /usr/local/bin/dump1090
+cp view1090 /usr/local/bin/view1090
+
+#create dump1090 menu entry via .desktop file
+echo '[Desktop Entry]
+Name=Dump1090
+GenericName=Dump1090
+Comment=Mode S SDR (software defined radio).
+Exec=/usr/local/sbin/dump1090.sh
+Icon=/usr/share/pixmaps/dump1090.png
+Terminal=false
+Type=Application
+Categories=Network;HamRadio;ADSB;Radio;' > /usr/share/applications/dump1090.desktop
 echo "\n\n...completed update for dump1090 for rtl-sdr devices..."
 }
 
@@ -245,7 +309,7 @@ getsdrtrunk(){
 #sdrtrunk
 echo "\n\n...SDRTrunk..."
 cd ~
-wget "https://github.com/DSheirer/sdrtrunk/releases/download/v0.3.3-beta.3/sdr-trunk-all-0.3.3-beta.3.jar"
+wget "https://github.com/DSheirer/sdrtrunk/releases/download/v0.4.0-alpha.9/sdr-trunk-0.4.0-alpha.9-linux-x64.zip"
 mv sdr-trunk-all-0.3.3-beta.3.jar /usr/local/sbin/sdrtrunk.jar
 }
 
@@ -345,5 +409,6 @@ getremotesdrclient
 getopenwebrx
 getqtradio
 getcubicsdr
+getlinhpsdr
 
 echo "\n\nScript Execution Completed!"
