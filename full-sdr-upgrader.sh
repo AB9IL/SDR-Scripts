@@ -1,7 +1,7 @@
-#!/bin/bash
+#! /bin/sh
 
-# full-sdr-upgrader for Skywave Linux, version 1.0
-# Copyright (c) 2019 by Philip Collier, radio AB9IL <webmaster@ab9il.net>
+# full-sdr-upgrader for Skywave Linux, version 0.9
+# Copyright (c) 2018 by Philip Collier, radio AB9IL <webmaster@ab9il.net>
 # SDR Updater is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 3 of the License, or
@@ -22,13 +22,13 @@ getsdrplay(){
 #echo "\n\n...SDRplay MiricsAPI..."
 #echo "\nGet it manually from http://sdrplay.com/"
 #echo "\nRobots are people too."
-#cd ~
+#cd /usr/local/src
 #chmod 755 SDRplay_RSP_API-Linux-2.13.1.run
 #./SDRplay_RSP_API-Linux-2.13.1.run
 #rm -f SDRplay_RSP_API-Linux-2.13.1.run
 
 #open source sdrplay driver from f4exb
-#cd ~
+#cd /usr/local/src
 #git clone https://github.com/f4exb/libmirisdr-4
 #mkdir libmirisdr-4/build
 #cd libmirisdr-4/build
@@ -36,12 +36,12 @@ getsdrplay(){
 #make
 #make install
 #ldconfig
-#cd ~
+#cd /usr/local/src 
 #rm -rf libmirisdr-4
 
 #SDRplay support in OpenWebRX
 echo "\n\n...openwebrx dependencies for sdrplay (SDRPlayPorts)"
-cd ~
+cd /usr/local/src
 git clone https://github.com/krippendorf/SDRPlayPorts
 mkdir SDRPlayPorts/build
 cd SDRPlayPorts/build
@@ -49,14 +49,14 @@ cmake ..
 make
 make install
 ldconfig
-cd ~
+cd /usr/local/src
 rm -rf SDRPlayPorts
 }
 
 getrtlsdr(){
 #install rtl-sdr drivers
 echo "\n\n...rtl-sdr firmware..."
-cd ~
+cd /usr/local/src
 #git clone https://git.osmocom.org/rtl-sdr
 #git clone https://github.com/steve-m/librtlsdr
 #git clone https://github.com/mutability/rtl-sdr
@@ -74,7 +74,7 @@ ldconfig
 getsoapy(){
 #get the SoapyAudio support module
 echo "\n\n...soapy audio"
-cd ~
+cd /usr/local/src
 git clone https://github.com/pothosware/SoapyAudio
 mkdir SoapyAudio/build
 cd SoapyAudio/build
@@ -82,7 +82,7 @@ cmake ..
 make
 make install
 ldconfig
-cd ~
+cd /usr/local/src
 rm -rf SoapyAudio
 
 #get SoapyPlutoSDR support module
@@ -98,7 +98,7 @@ ldconfig
 
 #get the SoapySDRPlay support module for CubicSDR
 echo "\n\n...SoapySDRPlay..."
-cd ~
+cd /usr/local/src
 git clone https://github.com/pothosware/SoapySDRPlay
 mkdir SoapySDRPlay/build
 cd SoapySDRPlay/build
@@ -106,12 +106,12 @@ cmake .. -DCMAKE_BUILD_TYPE=Release
 make
 make install
 ldconfig
-cd ~
+cd /usr/local/src
 rm -rf SoapySDRPlay
 
 #install rx_tools
 echo "\n\n...rx_tools..."
-cd ~
+cd /usr/local/src
 git clone https://github.com/rxseger/rx_tools
 #git clone https://github.com/darkstar007/rx_tools
 mkdir rx_tools/build
@@ -122,96 +122,126 @@ make install
 ldconfig
 }
 
-getqtradio(){
+#getqtradio(){
 #get qtradio
-echo "\n\n...QtRadio..."
-cd ~
-git clone https://github.com/alexlee188/ghpsdr3-alex
-cd ghpsdr3-alex
-sh cleanup.sh
-git checkout master
-autoreconf -i
-./configure
-make -j4 all
-make install
-cd ~
-rm -rf ghpsdr3-alex
+#echo "\n\n...QtRadio..."
+#cd /usr/local/src
+#git clone https://github.com/alexlee188/ghpsdr3-alex
+#cd ghpsdr3-alex
+#sh cleanup.sh
+#git checkout master
+#autoreconf -i
+#./configure
+#make -j4 all
+#make install
+#cd /usr/local/src
+#rm -rf ghpsdr3-alex
 
 #Create a better launcher
-echo '[Desktop Entry]
-Type=Application
-Name=QtRadio
-Name[xx]=QtRadio
-Generic Name=SDR GUI
-Exec=QtRadio
-Icon=QtRadio
-Terminal=False
-Categories=;HamRadio;' > /usr/local/share/applications/QtRadio.desktop
-}
+#echo '[Desktop Entry]
+#Type=Application
+#Name=QtRadio
+#Name[xx]=QtRadio
+#Generic Name=SDR GUI
+#Exec=QtRadio
+#Icon=QtRadio
+#Terminal=False
+#Categories=;HamRadio;' > /usr/local/share/applications/QtRadio.desktop
+#}
 
-getopenwebrx(){
-echo "\n\n...csdr dsp library..."
+#getopenwebrx(){
+#install OpenwebRX and dependencies
+#echo "\n\nGetting the csdr dsp library..."
 # get the csdr dsp library
-cd ~
-git clone https://github.com/simonyiszk/csdr
-cd csdr
-make
-make install
-ldconfig
-cd ~
-rm -rf csdr
+#cd /usr/local/src
+#git clone https://github.com/simonyiszk/csdr
+#cd csdr
+#make
+#make install
+#ldconfig
+#cd /usr/local/src
+#rm -rf csdr
 
-echo "\n\n...Openwebrx..."
+#echo "\n\n\nGetting Openwebrx..."
 # get openwebrx
-cd ~
+#cd /usr/local/src
 #git clone https://github.com/simonyiszk/openwebrx
-git clone https://github.com/jketterl/openwebrx
+#git clone https://github.com/jketterl/openwebrx
 # nothing to make
 # move the files
-cp -ar ~/openwebrx /usr/local/sbin/openwebrx
+#cp -ar /usr/local/src/openwebrx /usr/local/sbin/openwebrx
 
-# get openwebrx connectors 
-cd ~
-git clone https://github.com/jketterl/owrx_connector
-mkdir owrx_connector/build
-cd owrx_connector/build
-cmake ..
-make
-make install
-}
+# get openwebrx connectors
+#cd /usr/local/src
+#git clone https://github.com/jketterl/owrx_connector
+#mkdir owrx_connector/build
+#cd owrx_connector/build
+#cmake ..
+#make
+#make install
+#}
 
 getcubicsdr(){
 #install CubicSDR and dependencies
-cd ~
+cd /usr/local/src 
 wget "https://github.com/cjcliffe/CubicSDR/releases/download/0.2.3/CubicSDR-0.2.3-x86_64.AppImage"
 chmod +x CubicSDR-0.2.3-x86_64.AppImage
-mv ~/CubicSDR-0.2.3-x86_64.AppImage /usr/local/sbin/CubicSDR/CubicSDR.AppImage
+mv /usr/local/src/CubicSDR-0.2.3-x86_64.AppImage /usr/local/sbin/CubicSDR/CubicSDR.AppImage
 }
 
 getlinhpsdr(){
 # get linhpsdr
 echo "\n\n...linhpsdr..."
-cd ~
+#install dependencies
+cd /usr/local/src
+#apt update
+apt install libfftw3-dev libpulse-dev libsoundio-dev libgtk-3-dev libsoapysdr-dev libfftw3-3
+
+#get wdsp
+git clone https://github.com/g0orx/wdsp
+cd wdsp
+make
+make install
+cd /usr/local/src
+
+#get linhpsdr
+echo "\n\n...linhpsdr..."
+cd /usr/local/src
 git clone https://github.com/g0orx/linhpsdr
 cd linhpsdr
 sed -i "s/#SOAPYSDR_INCLUDE=SOAPYSDR/SOAPYSDR_INCLUDE=SOAPYSDR/g" Makefile
 make
-cd pkg
-dpkg -i linhpsdr.deb
-cd ~
+# to directly install the compiled version:
+make install
+# to install the deb:
+#cd pkg
+#dpkg -i linhpsdr.deb
+
+#create the launcher file
+echo "\n\n creating the .desktop file..."
+echo '[Desktop Entry]
+Version=0.1
+Type=Application
+Terminal=false
+Name=linHPSDR
+Name[eb_GB]=linHPSDR
+Exec=linhpsdr
+Icon=/usr/share/linhpsdr/hpsdr_small.png
+Categories=Radio;HamRadio;' > /usr/share/applications/linhpsdr.desktop
+cd /usr/local/src
 rm -rf linhpsdr
 }
 
 getremotesdrclient(){
 #get RemoteSdrClient-NS (for RFSpace hardware)
-cd ~
+cd /usr/local/src
 git clone https://github.com/csete/remotesdrclient-ns
 cd remotesdrclient-ns
 make
 #manually copy the binary to /usr/local/bin
-cp ~/remotesdrclient-ns/remotesdrclient-ns /usr/local/bin/remotesdrclient-ns
+cp /usr/local/src/remotesdrclient-ns/remotesdrclient-ns /usr/local/bin/remotesdrclient-ns
 #manually copy the icon to /usr/share/pixmaps
-cp ~/remotesdrclient-ns/RemoteSdrClient.png /usr/share/pixmaps/RemoteSdrClient.png
+cp /usr/local/src/remotesdrclient-ns/RemoteSdrClient.png /usr/share/pixmaps/RemoteSdrClient.png
 #create menu entry via .desktop file
 echo '[Desktop Entry]
 Name=RemoteSdrClient
@@ -226,14 +256,15 @@ Categories=Radio;HamRadio;' > /usr/share/applications/remotesdrclient.desktop
 
 rtlsdrairband(){
 #get rtlsdr-airband
-cd ~
+cd /usr/local/src
 git clone https://github.com/szpajder/RTLSDR-Airband
 cd RTLSDR-Airband
-PLATFORM=x86 NFM=1 make
+git checkout master
+make PLATFORM=x86 PULSE=1 NFM=1 WITH_SOAPYSDR=1
 make install
 
 #get libacars
-cd ~
+cd /usr/local/src
 git clone https://github.com/szpajder/libacars
 mkdir libacars/build
 cd libacars/build
@@ -243,7 +274,7 @@ make install
 ldconfig
 
 #get acarsdec
-cd ~
+cd /usr/local/src
 #git clone https://github.com/AB9IL/acarsdec
 git clone https://github.com/szpajder/acarsdec
 mkdir acarsdec/build
@@ -251,27 +282,36 @@ cd acarsdec/build
 cmake ../ -Drtl=ON
 make make install
 
+#get vdlm2dec
+cd /usr/local/src
+git clone https://github.com/TLeconte/vdlm2dec
+mkdir vdlm2dec/build
+cd vdlm2dec/build
+cmake .. -Drtl=ON
+make
+make install
+
 #get acarsserv
-cd ~
+cd /usr/local/src
 git clone https://github.com/TLeconte/acarsserv
 cd acarsserv
 make -f makefile
 cp acarsserv /usr/local/sbin/acarsserv
 
 #get dumpvdl2
-cd ~
-git clone https://github.com/szpajder/dumpvdl2
-mkdir dumpvdl2/build
-cd dumpvdl2/build
-cmake ../
-make
-make install
-ldconfig
+cd /usr/local/src
+#git clone https://github.com/szpajder/dumpvdl2
+#mkdir dumpvdl2/build
+#cd dumpvdl2/build
+#cmake ../
+#make
+#make install
+#ldconfig
 }
 
 getdump1090(){
 echo "\n\n...dump1090 for rtl-sdr devices..."
-cd ~
+cd /usr/local/src
 #git clone https://github.com/mutability/dump1090
 #git clone https://github.com/MalcolmRobb/dump1090
 git clone https://github.com/Mictronics/dump1090
@@ -293,22 +333,37 @@ Categories=Network;HamRadio;ADSB;Radio;' > /usr/share/applications/dump1090.desk
 echo "\n\n...completed update for dump1090 for rtl-sdr devices..."
 }
 
-getr820tweak(){
-echo "\n\n...getting r820tweak..."
-cd ~
-git clone https://github.com/gat3way/r820tweak
-cd r820tweak
+#getr820tweak(){
+#echo "\n\n...getting r820tweak..."
+#cd /usr/local/src
+#git clone https://github.com/gat3way/r820tweak
+#cd r820tweak
+#make
+#make install
+#cd ~
+#rm -rf r820tweak
+#ldconfig
+}
+
+getwx_sats(){
+# Install noaa-apt v 1.2.0
+# https://github.com/martinber/noaa-apt
+# Go get it and manually install it.
+
+# For Meteor satellite lrpt signals, install glrpt
+apt install libturbojpeg libturbojpeg0-dev
+git clone https://github.com/dvdesolve/glrpt
+mkdir glrpt/build
+cd glrpt/build
+cmake -DCMAKE_INSTALL_PREFIX=/usr ..
 make
 make install
-cd ~
-rm -rf r820tweak
-ldconfig
 }
 
 getsdrtrunk(){
 #sdrtrunk
 echo "\n\n...SDRTrunk..."
-cd ~
+cd /usr/local/src
 wget "https://github.com/DSheirer/sdrtrunk/releases/download/v0.4.0-alpha.9/sdr-trunk-0.4.0-alpha.9-linux-x64.zip"
 mv sdr-trunk-all-0.3.3-beta.3.jar /usr/local/sbin/sdrtrunk.jar
 }
@@ -316,7 +371,7 @@ mv sdr-trunk-all-0.3.3-beta.3.jar /usr/local/sbin/sdrtrunk.jar
 getwsjtx(){
 #get WSJT-X
 echo "\n\n...WSJT-X..."
-cd ~
+cd /usr/local/src
 wget "http://physics.princeton.edu/pulsar/k1jt/wsjtx_1.8.0_amd64.deb"
 dpkg -i wsjtx_1.8.0_amd64.deb
 }
@@ -334,7 +389,7 @@ cd rtaudio
 make
 make install
 ldconfig
-cd ~
+cd /usr/local/src
 rm -rf rtaudio
 }
 
@@ -355,10 +410,6 @@ Categories=Network;Internet;Networking;Privacy;Proxy;VPN;' > /usr/share/applicat
 
 echo "\n\n...cleaning up a bit..."
 
-#update cjdns
-echo "\n\n...updating cjdns..."
-sh -c "/etc/init.d/cjdns update"
-
 # get psiphon
 # optionally, use this dev's repo: https://github.com/thispc/psiphon
 git clone https://github.com/gilcu3/psiphon
@@ -366,7 +417,7 @@ cd psiphon
 
 #get openssh-portable for psiphon
 #optionally, use version 5.9p1
-cd ~
+cd /usr/local/src
 git clone https://github.com/openssh/openssh-portable
 cd openssh-portable
 autoreconf
@@ -401,13 +452,13 @@ getsoapy
 getr820tweak
 rtlsdrairband
 getdump1090
+getwx_sats
 getsdrtrunk
 getwsjtx
 getcrypto
 getrtaudio
 getremotesdrclient
 getopenwebrx
-getqtradio
 getcubicsdr
 getlinhpsdr
 
