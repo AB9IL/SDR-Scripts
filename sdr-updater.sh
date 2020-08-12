@@ -408,41 +408,40 @@ Comment=Censorship circumvention (proxy / vpn) application for unblocked web bro
 Categories=Network;Internet;Networking;Privacy;Proxy;VPN;' > /usr/share/applications/lantern.desktop
 
 # get psiphon
-echo "\n\n...updating psiphon..."
-cd /usr/local/src
-mkdir /usr/local/src/go
-export GOROOT=/usr/lib/go-1.11/bin # point to the directory copntaining the go binary
-export GOPATH=~/go # point to where source will be compiled
-export PATH=$GOPATH/bin:$GOROOT/bin:$PATH  # allow access from within the system
-cd /usr/local/src/go
-
-# download the source code
-# git clone https://github.com/Psiphon-Labs/psiphon-tunnel-core
-
-cd /usr/local/src/go/psiphon-tunnel-core/ConsoleClient
-
-sed -i "14s/.*/BUILDDATE=$(date +%Y-%m-%dT%H:%M:%S%z)/" make.bash
-
-./make.bash linux
-
-# Create a config file
-# See config options at https://github.com/Psiphon-Labs/psiphon-tunnel-core/blob/master/psiphon/config.go
-
+#get the crude but fast Psiphon client
+echo "\n\nNext, Psiphon (Psiphon-Tunnel-Core)"
+cd ~
+git clone  https://github.com/Psiphon-Labs/psiphon-tunnel-core-binaries 
+cp ~/psiphon-tunnel-core-binaries/linux/psiphon-tunnel-core-x86_64 /usr/local/sbin/psiphon/psiphon-tunnel-core-x86_64
 echo '{
 "LocalHttpProxyPort":8118,
 "LocalSocksProxyPort":1081,
 "PropagationChannelId":"FFFFFFFFFFFFFFFF",
 "ClientPlatform":"Linux",
-"EgressRegion":"",
+"EgressRegion":"SG",
 "RemoteServerListDownloadFilename":"remote_server_list",
 "RemoteServerListSignaturePublicKey":"MIICIDANBgkqhkiG9w0BAQEFAAOCAg0AMIICCAKCAgEAt7Ls+/39r+T6zNW7GiVpJfzq/xvL9SBH5rIFnk0RXYEYavax3WS6HOD35eTAqn8AniOwiH+DOkvgSKF2caqk/y1dfq47Pdymtwzp9ikpB1C5OfAysXzBiwVJlCdajBKvBZDerV1cMvRzCKvKwRmvDmHgphQQ7WfXIGbRbmmk6opMBh3roE42KcotLFtqp0RRwLtcBRNtCdsrVsjiI1Lqz/lH+T61sGjSjQ3CHMuZYSQJZo/KrvzgQXpkaCTdbObxHqb6/+i1qaVOfEsvjoiyzTxJADvSytVtcTjijhPEV6XskJVHE1Zgl+7rATr/pDQkw6DPCNBS1+Y6fy7GstZALQXwEDN/qhQI9kWkHijT8ns+i1vGg00Mk/6J75arLhqcodWsdeG/M/moWgqQAnlZAGVtJI1OgeF5fsPpXu4kctOfuZlGjVZXQNW34aOzm8r8S0eVZitPlbhcPiR4gT/aSMz/wd8lZlzZYsje/Jr8u/YtlwjjreZrGRmG8KMOzukV3lLmMppXFMvl4bxv6YFEmIuTsOhbLTwFgh7KYNjodLj/LsqRVfwz31PgWQFTEPICV7GCvgVlPRxnofqKSjgTWI4mxDhBpVcATvaoBl1L/6WLbFvBsoAUBItWwctO2xalKxF5szhGm8lccoc5MZr8kfE0uxMgsxz4er68iCID+rsCAQM=",
 "RemoteServerListUrl":"https://s3.amazonaws.com//psiphon/web/mjr4-p23r-puwl/server_list_compressed",
 "SponsorId":"FFFFFFFFFFFFFFFF",
 "UseIndistinguishableTLS":true
-}' > psiphon.config
+}
+' > /usr/local/sbin/psiphon/psiphon.config
 
-cp psiphon-tunnel-core-i686 /usr/local/sbin/psiphon/psiphon-tunnel-core-i686
-cp psiphon.config /usr/local/sbin/psiphon/psiphon.config
+#create the launcher file
+echo "\n\nCreating the launcher..."
+echo '[Desktop Entry]
+Comment=Psiphon Circumvention (vpn / proxy) controller for uncensored internet.
+Exec=gnome-terminal -e "/usr/local/sbin/psiphon-controller.sh"
+Name=Psiphon Controller
+GenericName[en_US]=Psiphon censorship circumvention controller.
+Categories=Network;Internet;Networking;Privacy;psiphon;VPN;proxy;
+Icon=/usr/share/pixmaps/psiphon.png
+NoDisplay=false
+StartupNotify=false
+Terminal=0
+TerminalOptions=
+Type=Application
+GenericName[en_US.UTF-8]=Privacy, Cryptography, Circumvention Tools, Psiphon;' > /usr/share/applications/psiphon-controller.desktop
 }
 
 ans=$(zenity  --list --height 470 --width 420 --text "SDR Software Updater" \
