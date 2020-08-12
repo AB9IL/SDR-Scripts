@@ -412,7 +412,7 @@ echo "\n\n...cleaning up a bit..."
 
 # get psiphon
 #get the crude but fast Psiphon client
-echo "\n\nNext, Psiphon (PyClient)"
+echo "\n\nNext, Psiphon (Psiphon-Tunnel-Core)"
 cd ~
 git clone  https://github.com/Psiphon-Labs/psiphon-tunnel-core-binaries 
 cp ~/psiphon-tunnel-core-binaries/linux/psiphon-tunnel-core-x86_64 /usr/local/sbin/psiphon/psiphon-tunnel-core-x86_64
