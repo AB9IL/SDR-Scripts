@@ -1,6 +1,6 @@
 # SDR-Scripts
 
-## Downloading and update software defined radio applications
+### Tools to Concurrently Download and Update Software Defined Radio Apps
 These run in Bash, downloading and compiling concurrenty, four jobs at once.
 
 Download, install, or update SoapySDR drivers and associated hardware: rtl-sdr, hackrf, sdrplay, etc.
@@ -12,7 +12,7 @@ sudo apt install parallel
 python3 -m pip install lastversion
 ```
 
-## Supported Apps
+#### Supported Apps:
 Decoders                    SDR Hardware & GUIs
 ----------------            ------------------------------------------
 glrpt                       sdrplay api (must manually download first)
@@ -38,7 +38,7 @@ sdrtrunk                    SoapyAirspyHF
                             CubicSDR
 
 
-### Usage:
+#### Usage:
 Copy the scripts to /usr/local/src.  Execute them there as root.
 ```
 sudo sdr-installer.sh
