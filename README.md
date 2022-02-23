@@ -13,29 +13,29 @@ python3 -m pip install lastversion
 ```
 
 #### Supported Apps:
-Decoders                    SDR Hardware & GUIs
-----------------            ------------------------------------------
-glrpt                       sdrplay api (must manually download first)
-audioprism                  libmirisdr-4
-kalibrate-rtl               SoapySDR (core functionality)
-dump1090                    rtl-sdr
-RTLSDR-Airband              gr-osmosdr
-libacars                    SoapyRTLSDR
-acarsdec                    SoapyPlutoSDR
-vdlm2dec                    SoapyRedPitaya
-acarsserv                   SoapySDRPlay3
-rtl-ais                     Airspy
-noaa-apt                    SoapyAirspy
-sdrtrunk                    SoapyAirspyHF
-                            SoapyAudio
-                            SoapyBladeRF
-                            SoapyHackRF
-                            SoapyLMS7
-                            SoapyRadioberrySDR
-                            SoapyUHD
-                            Gqrx
-                            SDRplusplus
-                            CubicSDR
+| Decoders | SDR Hardware & GUIs |
+| --- | --- |
+| glrpt | sdrplay api (must manually download first)
+| audioprism | libmirisdr-4
+| kalibrate-rtl | SoapySDR (core functionality)
+| dump1090 | rtl-sdr
+| RTLSDR-Airband | gr-osmosdr
+| libacars | SoapyRTLSDR
+| acarsdec | SoapyPlutoSDR
+| vdlm2dec | SoapyRedPitaya
+| acarsserv | SoapySDRPlay3
+| rtl-ais | Airspy
+| noaa-apt | SoapyAirspy
+| sdrtrunk | SoapyAirspyHF
+| | SoapyAudio
+| | SoapyBladeRF
+| | SoapyHackRF
+| | SoapyLMS7
+| | SoapyRadioberrySDR
+| | SoapyUHD
+| |  Gqrx
+| |  SDRplusplus
+| | CubicSDR
 
 
 #### Usage:
