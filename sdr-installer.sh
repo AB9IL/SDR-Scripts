@@ -1,4 +1,4 @@
-#! /bin/sh
+#! /bin/bash
 
 # Copyright (c) 2022 by Philip Collier, radio AB9IL <webmaster@ab9il.net>
 # This is free software; you can redistribute it and/or modify it
