@@ -1,7 +1,7 @@
 # SDR-Scripts
 
 ### Tools to Concurrently Download and Update Software Defined Radio Apps
-These run in Bash, downloading and compiling concurrenty, four jobs at once.
+These run in Bash, downloading and compiling concurrently, four jobs at once.
 
 Download, install, or update SoapySDR drivers and associated hardware: rtl-sdr, hackrf, sdrplay, etc.
 The decoder script supports decoders and demod tools for ADS-B, ACARS, and VDL mode 2, etc.
