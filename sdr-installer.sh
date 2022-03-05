@@ -1,4 +1,4 @@
-#!/bin/bash
+#! /bin/bash
 
 # Copyright (c) 2022 by Philip Collier, radio AB9IL <webmaster@ab9il.net>
 # This is free software; you can redistribute it and/or modify it
@@ -74,7 +74,7 @@ get_gr_osmosdr() {
 printf "\n\n...gr-osmosdr..."
 cd "$working_dir"
 [[ -d "$working_dir/gr-osmosdr" ]] \
-    || git clone "git://git.osmocom.org/gr-osmosdr" --depth 1 \
+    || git clone "https://github.com/Nuand/gr-osmosdr" --depth 1 \
     && mkdir -p "$working_dir/gr-osmosdr/build"
 cd "$working_dir/gr-osmosdr/build"
 cmake ..
@@ -89,6 +89,18 @@ cd "$working_dir"
     || git clone "https://github.com/pothosware/SoapyRTLSDR" --depth 1 \
     && mkdir -p "$working_dir/SoapyRTLSDR/build"
 cd "$working_dir/SoapyRTLSDR/build"
+cmake ..
+make -j4
+make install
+}
+
+get_SoapyRTLTCP() {
+printf "\n\n...SoapyRTLTCP..."
+cd "$working_dir"
+[[ -d "$working_dir/SoapyRTLTCP" ]] \
+    || git clone "https://github.com/pothosware/SoapyRTLTCP" --depth 1 \
+    && mkdir -p "$working_dir/SoapyRTLTCP/build"
+cd "$working_dir/SoapyRTLTCP/build"
 cmake ..
 make -j4
 make install
@@ -231,6 +243,18 @@ make -j4
 make install
 }
 
+get_SoapyOsmo() {
+printf "\n\n...SoapyOsmo"
+cd "$working_dir"
+[[ -d "$working_dir/SoapyOsmo" ]] \
+    || git clone "https://github.com/pothosware/SoapyOsmo" --depth 1 \
+    && mkdir -p "$working_dir/SoapyOsmo/build"
+cd "$working_dir/SoapyOsmo/build"
+cmake ..
+make -j4
+make install
+}
+
 get_SoapyRadioberrySDR() {
 printf "\n\n...SoapyRadioberrySDR"
 cd "$working_dir"
@@ -238,6 +262,18 @@ cd "$working_dir"
     || git clone "https://github.com/pa3gsb/Radioberry-2.x" --depth 1 \
     && mkdir -p "$working_dir/Radioberry-2.x/SBC/rpi-4/SoapyRadioberrySDR/build"
 cd "$working_dir/Radioberry-2.x/SBC/rpi-4/SoapyRadioberrySDR/build"
+cmake ..
+make -j4
+make install
+}
+
+get_SoapyRemote() {
+printf "\n\n...SoapyRemote"
+cd "$working_dir"
+[[ -d "$working_dir/SoapyRemote" ]] \
+    || git clone "https://github.com/pothosware/SoapyRemote" --depth 1 \
+    && mkdir -p "$working_dir/SoapyRemote/build"
+cd "$working_dir/SoapyRemote/build"
 cmake ..
 make -j4
 make install
@@ -334,7 +370,17 @@ rm $target_file
 }
 
 get_CubicSDR() {
-apt -o DPkg::Lock::Timeout=-1 install -y cubicsdr
+printf "\n\n...CubicSDR..."
+cd "$working_dir"
+git_repo="cjcliffe/CubicSDR"
+target_file="CubicSDR-.*-x86_64.AppImage"
+app_dir="/opt/CubicSDR"
+dl_dir="$working_dir"
+[[ -d "$app_dir" ]] || mkdir -p $app_dir
+download_last $git_repo $target_file $dl_dir
+app_img_file="$(find . -maxdepth 1 -name "$(echo "$target_file" | sed 's|\.||')")"
+chmod +x "$app_img_file"
+mv "$app_img_file" "$app_dir/CubicSDR.AppImage"
 }
 
 # Install gnuradio dependencies
@@ -372,6 +418,7 @@ get_rtl_sdr_drivers \
 get_gr_osmosdr \
 get_SoapyRTLSDR \
 get_SoapyPlutoSDR \
+get_SoapyRTLTCP \
 get_SoapyRedPitaya \
 get_SoapySDRPlay3 \
 get_Airspy \
@@ -381,7 +428,9 @@ get_SoapyAudio \
 get_SoapyBladeRF \
 get_SoapyHackRF \
 get_SoapyLMS7 \
+get_SoapyOsmo \
 get_SoapyRadioberrySDR \
+get_SoapyRemote \
 get_SoapyUHD \
 get_gqrx \
 get_gqrx_scanner \
