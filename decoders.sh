@@ -63,9 +63,26 @@ cd "$working_dir"
 [[ -d "$working_dir/dump1090-fa" ]] \
     || git clone "https://github.com/adsbxchange/dump1090-fa" --depth 1
 cd "$working_dir/dumpdump1090-fa"
-make -j4
-cp dump1090 /usr/local/bin/dump1090
-cp view1090 /usr/local/bin/view1090
+make -j4 -f Makefile BLADERF=no
+# uncomment the symlinker below if needed
+#ln -sf "$working_dir/dump1090-fa/dump1090" "/usr/local/bin/dump1090"
+#ln -sf "$working_dir/dump1090-fa/view1090" "/usr/local/bin/view1090"
+}
+
+update_dump1090_ol3map() {
+printf "\n\n...dump1090_ol3map..."
+cd "$working_dir"
+[[ -d "$working_dir/Dump1090-OpenLayers3-html" ]] \
+    || git clone "https://github.com/alkissack/Dump1090-OpenLayers3-html" --depth 1
+chmod 4775 "$working_dir/Dump1090-OpenLayers3-html"
+chmod 4777 "$working_dir/Dump1090-OpenLayers3-html/public_html"
+cd "$working_dir/Dump1090-OpenLayers3-html/public_html"
+cp config.js config.js.orig
+chmod 666 config.js
+
+# set up the directory used by Dump1090
+mkdir -p "/usr/local/share/dump1090"
+ln -sf "$working_dir/Dump1090-OpenLayers3-html/public_html" "/usr/local/share/dump1090/html"
 }
 
 update_RTLSDR-Airband() {
@@ -122,8 +139,9 @@ cd "$working_dir"
 [[ -d "$working_dir/acarsserv" ]] \
     || git clone "https://github.com/TLeconte/acarsserv" --depth 1
 cd "$working_dir/acarsserv"
-make -j4 -f makefile
-cp acarsserv "/usr/local/sbin/acarsserv"
+make -j4 -f Makefile
+# uncomment the symlinker below if needed
+#ln -sf "$working_dir/acarsserv/acarsserv" "/usr/local/sbin/acarsserv"
 }
 
 update_dumpvdl2() {
@@ -206,6 +224,7 @@ list="update_glrpt \
 update_audioprism \
 update_kalibrate-rtl \
 update_dump1090 \
+update_dump1090_ol3map \
 update_RTLSDR-Airband \
 update_libacars \
 update_acarsdec \
